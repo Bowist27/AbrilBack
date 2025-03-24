@@ -4,10 +4,22 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Recommended CORS configuration
+// Specific CORS configuration
 const corsOptions = {
-  // Replace '*' with your exact frontend domain
-  origin: process.env.FRONTEND_URL || "https://front.romytony.uk/", 
+  origin: function (origin, callback) {
+    // List of allowed origins
+    const allowedOrigins = [
+      'https://front.romytony.uk',
+      'https://backabril.romytony.uk'
+    ];
+
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -17,32 +29,37 @@ const corsOptions = {
 // Apply CORS middleware
 app.use(cors(corsOptions));
 
-// Additional security middleware
-app.disable('x-powered-by'); // Hide Express server information
+// Specific OPTIONS handler for all routes
+app.options('*', cors(corsOptions));
+
 app.use(express.json({
   limit: '10kb' // Prevent large payload attacks
 }));
 
+// Logging middleware to help diagnose CORS issues
+app.use((req, res, next) => {
+  console.log('Incoming request:');
+  console.log('Origin:', req.get('origin'));
+  console.log('Host:', req.get('host'));
+  next();
+});
+
+app.post("/login", (req, res) => {
+  console.log("Login attempt received");
+  res.set('Access-Control-Allow-Origin', 'https://front.romytony.uk');
+  res.set('Access-Control-Allow-Credentials', 'true');
+  res.json({ message: "Successfully reached backend" });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: "Something went wrong!", 
-    error: process.env.NODE_ENV === 'production' ? {} : err.message 
+  console.error('CORS Error:', err);
+  res.status(403).json({ 
+    message: "CORS error", 
+    error: err.message 
   });
 });
 
-// Login route with basic error handling
-app.post("/login", (req, res) => {
-  try {
-    console.log("Login attempt from frontend");
-    res.json({ message: "Successfully reached backend" });
-  } catch (error) {
-    res.status(500).json({ message: "Login process failed" });
-  }
-});
-
-// Start server with error handling
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
