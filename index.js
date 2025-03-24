@@ -6,11 +6,7 @@ const PORT = 3000;
 
 // Configuración CORS más explícita
 app.use(cors({
-  
-  origin: [
-    'https://www.front.romytony.uk', 
-    'https://front.romytony.uk'
-  ],
+  origin: "https://www.front.romytony.uk", // Especifica el origen exacto en vez de "*"
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
