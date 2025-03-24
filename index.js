@@ -8,8 +8,8 @@ const PORT = 3000;
 app.use(cors({
   
   origin: [
-    'https://www.romytony.uk', 
-    'https://romytony.uk'
+    'https://www.front.romytony.uk', 
+    'https://front.romytony.uk'
   ],
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
