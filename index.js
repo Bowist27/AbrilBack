@@ -4,6 +4,9 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 
+// Middleware específico para OPTIONS
+app.options('*', cors());
+
 // Configuración CORS más explícita
 app.use(cors({
   origin: "https://www.front.romytony.uk", // Especifica el origen exacto en vez de "*"
@@ -13,9 +16,6 @@ app.use(cors({
   preflightContinue: false,
   optionsSuccessStatus: 204
 }));
-
-// Middleware específico para OPTIONS
-app.options('*', cors());
 
 app.use(express.json());
 
