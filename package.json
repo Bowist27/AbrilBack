@@ -20,6 +20,6 @@
   "homepage": "https://github.com/Bowist27/AbrilBack#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.22.0"
   }
 }
